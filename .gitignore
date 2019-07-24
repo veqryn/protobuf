@@ -1,3 +1,29 @@
+# OS Files
+.bashrc*
+*.swp
+*~
+._*
+.DS_Store
+*.ipr
+*.iml
+*.iws
+.idea/
+.vscode/
+dist/
+logs/
+log/
+nbproject/
+/SR/
+.tidyall.d/
+/tmp/
+target/
+_ide_helper.php
+_phpstorm.meta.php
+
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
