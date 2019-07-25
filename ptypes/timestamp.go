@@ -130,3 +130,12 @@ func TimestampString(ts *tspb.Timestamp) string {
 	}
 	return t.Format(time.RFC3339Nano)
 }
+
+// StringTimestamp creates a veqryn.protobuf.Timestamp proto from a string with the given layout
+func StringTimestamp(layout string, dateValue string) (*tspb.Timestamp, error) {
+	t, err := time.Parse(layout, dateValue)
+	if err != nil {
+		return nil, err
+	}
+	return TimestampProto(t)
+}

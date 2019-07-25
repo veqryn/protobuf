@@ -151,3 +151,23 @@ func TestTimestampNow(t *testing.T) {
 		t.Errorf("between %v and %v\nTimestamp(TimestampNow()) = %v", before, after, tm)
 	}
 }
+
+func TestStringTimestamp(t *testing.T) {
+	for _, test := range []struct {
+		want *tspb.Timestamp
+		ts   string
+	}{
+		{&tspb.Timestamp{Seconds: 0, Nanos: 0}, "1970-01-01T00:00:00Z"},
+		{&tspb.Timestamp{Seconds: 1506956400, Nanos: 0}, "2017-10-02T10:00:00-05:00"},
+		{&tspb.Timestamp{Seconds: 1538492400, Nanos: 0}, "2018-10-02T15:00:00Z"},
+		{&tspb.Timestamp{Seconds: 1570028400, Nanos: 50000000}, "2019-10-02T15:00:00.05Z"},
+	} {
+		got, err := StringTimestamp(time.RFC3339, test.ts)
+		if err != nil {
+			t.Errorf("StringTimestamp(%v) error = %s, but want = %v", test.ts, err, test.want)
+		}
+		if !proto.Equal(got, test.want) {
+			t.Errorf("StringTimestamp(%v) = %q, want %q", test.ts, got, test.want)
+		}
+	}
+}
