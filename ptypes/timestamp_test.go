@@ -41,6 +41,15 @@ import (
 	tspb "github.com/veqryn/protobuf/ptypes/timestamp"
 )
 
+const (
+	// Seconds field of the earliest valid Timestamp.
+	// This is time.Date(1, 1, 1, 0, 0, 0, 0, time.UTC).Unix().
+	minValidSeconds = -62135596800
+	// Seconds field just after the latest valid Timestamp.
+	// This is time.Date(10000, 1, 1, 0, 0, 0, 0, time.UTC).Unix().
+	maxValidSeconds = 253402300800
+)
+
 var tests = []struct {
 	ts    *tspb.Timestamp
 	valid bool
@@ -78,7 +87,7 @@ var tests = []struct {
 
 func TestValidateTimestamp(t *testing.T) {
 	for _, s := range tests {
-		got := validateTimestamp(s.ts)
+		got := s.ts.ValidateTimestamp()
 		if (got == nil) != s.valid {
 			t.Errorf("validateTimestamp(%v) = %v, want %v", s.ts, got, s.valid)
 		}

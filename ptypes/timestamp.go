@@ -34,48 +34,11 @@ package ptypes
 // This file implements operations on veqryn.protobuf.Timestamp.
 
 import (
-	"errors"
-	"fmt"
 	"time"
 
 	google_tspb "github.com/golang/protobuf/ptypes/timestamp"
 	tspb "github.com/veqryn/protobuf/ptypes/timestamp"
 )
-
-const (
-	// Seconds field of the earliest valid Timestamp.
-	// This is time.Date(1, 1, 1, 0, 0, 0, 0, time.UTC).Unix().
-	minValidSeconds = -62135596800
-	// Seconds field just after the latest valid Timestamp.
-	// This is time.Date(10000, 1, 1, 0, 0, 0, 0, time.UTC).Unix().
-	maxValidSeconds = 253402300800
-)
-
-// validateTimestamp determines whether a Timestamp is valid.
-// A valid timestamp represents a time in the range
-// [0001-01-01, 10000-01-01) and has a Nanos field
-// in the range [0, 1e9).
-//
-// If the Timestamp is valid, validateTimestamp returns nil.
-// Otherwise, it returns an error that describes
-// the problem.
-//
-// Every valid Timestamp can be represented by a time.Time, but the converse is not true.
-func validateTimestamp(ts *tspb.Timestamp) error {
-	if ts == nil {
-		return errors.New("timestamp: nil Timestamp")
-	}
-	if ts.Seconds < minValidSeconds {
-		return fmt.Errorf("timestamp: %v before 0001-01-01", ts)
-	}
-	if ts.Seconds >= maxValidSeconds {
-		return fmt.Errorf("timestamp: %v after 10000-01-01", ts)
-	}
-	if ts.Nanos < 0 || ts.Nanos >= 1e9 {
-		return fmt.Errorf("timestamp: %v: nanos not in range [0, 1e9)", ts)
-	}
-	return nil
-}
 
 // Timestamp converts a veqryn.protobuf.Timestamp proto to a time.Time.
 // It returns an error if the argument is invalid.
@@ -89,64 +52,37 @@ func validateTimestamp(ts *tspb.Timestamp) error {
 // A nil Timestamp returns an error. The first return value in that case is
 // undefined.
 func Timestamp(ts *tspb.Timestamp) (time.Time, error) {
-	// Don't return the zero value on error, because corresponds to a valid
-	// timestamp. Instead return whatever time.Unix gives us.
-	var t time.Time
-	if ts == nil {
-		t = time.Unix(0, 0).UTC() // treat nil like the empty Timestamp
-	} else {
-		t = time.Unix(ts.Seconds, int64(ts.Nanos)).UTC()
-	}
-	return t, validateTimestamp(ts)
+	return ts.Timestamp()
 }
 
 // TimestampNow returns a veqryn.protobuf.Timestamp for the current time.
 func TimestampNow() *tspb.Timestamp {
-	ts, err := TimestampProto(time.Now())
-	if err != nil {
-		panic("ptypes: time.Now() out of Timestamp range")
-	}
-	return ts
+	return (&tspb.Timestamp{}).SetToNow()
 }
 
 // TimestampProto converts the time.Time to a veqryn.protobuf.Timestamp proto.
 // It returns an error if the resulting Timestamp is invalid.
 func TimestampProto(t time.Time) (*tspb.Timestamp, error) {
-	ts := &tspb.Timestamp{
-		Seconds: t.Unix(),
-		Nanos:   int32(t.Nanosecond()),
-	}
-	if err := validateTimestamp(ts); err != nil {
-		return nil, err
-	}
-	return ts, nil
+	return (&tspb.Timestamp{}).SetToTime(t)
 }
 
 // TimestampString returns the RFC 3339 string for valid Timestamps. For invalid
 // Timestamps, it returns an error message in parentheses.
 func TimestampString(ts *tspb.Timestamp) string {
-	t, err := Timestamp(ts)
-	if err != nil {
-		return fmt.Sprintf("(%v)", err)
-	}
-	return t.Format(time.RFC3339Nano)
+	return ts.RFC3339()
 }
 
 // StringTimestamp creates a veqryn.protobuf.Timestamp proto from a string with the given layout
 func StringTimestamp(layout string, dateValue string) (*tspb.Timestamp, error) {
-	t, err := time.Parse(layout, dateValue)
-	if err != nil {
-		return nil, err
-	}
-	return TimestampProto(t)
+	return (&tspb.Timestamp{}).SetToString(layout, dateValue)
 }
 
 // ToGoogleTimestamp converts a veqryn.protobuf.Timestamp proto into a google.protobuf.Timestamp proto
 func ToGoogleTimestamp(ts *tspb.Timestamp) *google_tspb.Timestamp {
-	return &google_tspb.Timestamp{Seconds: ts.Seconds, Nanos: ts.Nanos}
+	return ts.GoogleTimestamp()
 }
 
 // FromGoogleTimestamp converts a google.protobuf.Timestamp proto into a veqryn.protobuf.Timestamp proto
 func FromGoogleTimestamp(ts *google_tspb.Timestamp) *tspb.Timestamp {
-	return &tspb.Timestamp{Seconds: ts.Seconds, Nanos: ts.Nanos}
+	return (&tspb.Timestamp{}).SetToGoogleTimestamp(ts)
 }
