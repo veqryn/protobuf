@@ -1,0 +1,15 @@
+version: '3.5'
+services:
+
+    ## SCRIPTS ##
+
+    # Run this to update all generated proto files:
+    # docker-compose -f docker-compose.generate-protoc.yml up
+    golang-generate-protoc:
+        container_name: golang-generate-protoc
+        image: golang-generate-protoc
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+        volumes:
+            - ".:/go/src/github.com/veqryn/protobuf:"
