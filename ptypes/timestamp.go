@@ -38,6 +38,7 @@ import (
 	"fmt"
 	"time"
 
+	google_tspb "github.com/golang/protobuf/ptypes/timestamp"
 	tspb "github.com/veqryn/protobuf/ptypes/timestamp"
 )
 
@@ -138,4 +139,14 @@ func StringTimestamp(layout string, dateValue string) (*tspb.Timestamp, error) {
 		return nil, err
 	}
 	return TimestampProto(t)
+}
+
+// ToGoogleTimestamp converts a veqryn.protobuf.Timestamp proto into a google.protobuf.Timestamp proto
+func ToGoogleTimestamp(ts *tspb.Timestamp) *google_tspb.Timestamp {
+	return &google_tspb.Timestamp{Seconds: ts.Seconds, Nanos: ts.Nanos}
+}
+
+// FromGoogleTimestamp converts a google.protobuf.Timestamp proto into a veqryn.protobuf.Timestamp proto
+func FromGoogleTimestamp(ts *google_tspb.Timestamp) *tspb.Timestamp {
+	return &tspb.Timestamp{Seconds: ts.Seconds, Nanos: ts.Nanos}
 }

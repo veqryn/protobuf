@@ -37,6 +37,7 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/proto"
+	google_tspb "github.com/golang/protobuf/ptypes/timestamp"
 	tspb "github.com/veqryn/protobuf/ptypes/timestamp"
 )
 
@@ -168,6 +169,36 @@ func TestStringTimestamp(t *testing.T) {
 		}
 		if !proto.Equal(got, test.want) {
 			t.Errorf("StringTimestamp(%v) = %q, want %q", test.ts, got, test.want)
+		}
+	}
+}
+
+func TestToGoogleTimestamp(t *testing.T) {
+	for _, test := range []struct {
+		ts *tspb.Timestamp
+	}{
+		{&tspb.Timestamp{Seconds: 0, Nanos: 0}},
+		{&tspb.Timestamp{Seconds: 1506956400, Nanos: 0}},
+		{&tspb.Timestamp{Seconds: 1570028400, Nanos: 50000000}},
+	} {
+		got := ToGoogleTimestamp(test.ts)
+		if test.ts.Seconds != got.Seconds || test.ts.Nanos != got.Nanos {
+			t.Errorf("ToGoogleTimestamp(%v) = %q", test.ts, got)
+		}
+	}
+}
+
+func TestFromGoogleTimestamp(t *testing.T) {
+	for _, test := range []struct {
+		ts *google_tspb.Timestamp
+	}{
+		{&google_tspb.Timestamp{Seconds: 0, Nanos: 0}},
+		{&google_tspb.Timestamp{Seconds: 1506956400, Nanos: 0}},
+		{&google_tspb.Timestamp{Seconds: 1570028400, Nanos: 50000000}},
+	} {
+		got := FromGoogleTimestamp(test.ts)
+		if test.ts.Seconds != got.Seconds || test.ts.Nanos != got.Nanos {
+			t.Errorf("FromGoogleTimestamp(%v) = %q", test.ts, got)
 		}
 	}
 }
