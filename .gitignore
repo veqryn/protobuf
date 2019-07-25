@@ -36,3 +36,6 @@ _phpstorm.meta.php
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+# Vendored Libraries
+vendor/
