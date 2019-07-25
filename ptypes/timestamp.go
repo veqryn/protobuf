@@ -52,7 +52,7 @@ import (
 // A nil Timestamp returns an error. The first return value in that case is
 // undefined.
 func Timestamp(ts *tspb.Timestamp) (time.Time, error) {
-	return ts.Timestamp()
+	return ts.Time()
 }
 
 // TimestampNow returns a veqryn.protobuf.Timestamp for the current time.

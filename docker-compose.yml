@@ -1,0 +1,19 @@
+#
+# To run:
+# docker-compose up -d
+#
+# To stop and cleanup:
+# docker-compose stop && docker-compose rm -vf
+#
+
+version: '3.5'
+services:
+
+    postgres:
+        image: postgres:11.4
+        ports:
+            - "5432:5432"
+        environment:
+            - POSTGRES_DB=proto
+            - POSTGRES_USER=root
+            - POSTGRES_PASSWORD=password

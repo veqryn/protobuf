@@ -74,7 +74,7 @@ func (m *Timestamp) ValidateTimestamp() error {
 	return nil
 }
 
-// Timestamp converts the veqryn.protobuf.Timestamp proto to a time.Time.
+// Time converts the veqryn.protobuf.Timestamp proto to a time.Time.
 // It returns an error if the argument is invalid.
 //
 // Unlike most Go functions, if Timestamp returns an error, the first return value
@@ -85,7 +85,7 @@ func (m *Timestamp) ValidateTimestamp() error {
 //
 // A nil Timestamp returns an error. The first return value in that case is
 // undefined.
-func (m *Timestamp) Timestamp() (time.Time, error) {
+func (m *Timestamp) Time() (time.Time, error) {
 	// Don't return the zero value on error, because corresponds to a valid
 	// timestamp. Instead return whatever time.Unix gives us.
 	var t time.Time
@@ -126,7 +126,7 @@ func (m *Timestamp) SetToTime(t time.Time) (*Timestamp, error) {
 // RFC3339 returns the RFC 3339 string for valid Timestamps. For invalid
 // Timestamps, it returns an error message in parentheses.
 func (m *Timestamp) RFC3339() string {
-	t, err := m.Timestamp()
+	t, err := m.Time()
 	if err != nil {
 		return fmt.Sprintf("(%v)", err)
 	}
