@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package veqryn.protobuf.ptypes.test;
+
+option go_package = "github.com/veqryn/protobuf/ptypes/test";
+
+import "veqryn/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+import "protoc-gen-swagger/options/annotations.proto";
+
+service TestAPI {
+	rpc Timestamp(TimestampReq) returns (TimestampResp) {
+		option (google.api.http) = {
+			get: "/timestamp"
+			additional_bindings {
+			  post: "/timestamp"
+			  body: "*"
+			}
+		};
+	}
+}
+
+message TimestampReq {
+	veqryn.protobuf.Timestamp my_time = 1;
+}
+
+message TimestampResp {
+	veqryn.protobuf.Timestamp my_time = 1;
+}
