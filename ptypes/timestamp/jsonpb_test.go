@@ -8,6 +8,8 @@ import (
 )
 
 func TestJsonPBMarshal(t *testing.T) {
+	t.Parallel()
+
 	marshaller := jsonpb.Marshaler{OrigName: true, EmitDefaults: true}
 
 	for _, test := range []struct {
@@ -34,6 +36,8 @@ func TestJsonPBMarshal(t *testing.T) {
 }
 
 func TestJsonPBUnmarshal(t *testing.T) {
+	t.Parallel()
+
 	marshaller := jsonpb.Marshaler{}
 
 	for _, test := range []struct {

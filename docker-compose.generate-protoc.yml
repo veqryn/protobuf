@@ -4,7 +4,7 @@ services:
     ## SCRIPTS ##
 
     # Run this to update all generated proto files:
-    # docker-compose -f docker-compose.generate-protoc.yml up
+    # docker-compose -f docker-compose.generate-protoc.yml up --build
     golang-generate-protoc:
         container_name: golang-generate-protoc
         image: golang-generate-protoc
